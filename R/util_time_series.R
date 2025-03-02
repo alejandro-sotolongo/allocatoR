@@ -250,7 +250,7 @@ price_to_ret <- function(x) {
 #' ret <- price_to_ret(price)
 #' head(ret)
 #' @export
-ret_to_price <- function(x, na_rm = FALSE) {
+ret_to_price <- function(x) {
   price <- apply(x + 1, 2, cumprod)
   first_row <- xts(matrix(1, ncol = ncol(x)),
                    last_us_trading_day(zoo::index(x)[1]))
