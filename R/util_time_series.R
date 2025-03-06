@@ -189,21 +189,6 @@ xts_rbind <- function(new, old, is_xts = TRUE, backfill = FALSE) {
   return(dataframe_to_xts(combo_w))
 }
 
-#' @title Column bind xts objects while preserving columns names
-#' @param x xts object
-#' @param y xts object
-#' @details
-#' Column names will get converted to `data.frame` formats when `cbind` is
-#' called on the xts object. E.g., Small Cap will be Small.Cap. This method
-#' preserves the spaces or special characters in the original column names.
-#' @return xts with `cbind(x, y)` with original column names of `x` and `y`
-#' @export
-xts_cbind <- function(x, y) {
-  col_nms <- c(colnames(x), colnames(y))
-  combo <- cbind(x, y)
-  colnames(combo) <- col_nms
-  return(combo)
-}
 
 #' @title Column bind the intersection of two xts objects
 #' @param x xts object
@@ -216,7 +201,7 @@ xts_cbind <- function(x, y) {
 #'   removed due to too many missing values (if any).
 #' @export
 xts_cbind_inter <- function(x, y, eps = 0.05) {
-  combo <- xts_cbind(x, y)
+  combo <- cbind.xts(x, y, check.names = FALSE)
   res <- clean_ret(combo, eps = eps)
   return(res)
 }

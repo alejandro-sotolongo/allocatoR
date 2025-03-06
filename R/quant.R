@@ -610,7 +610,7 @@ roll_beta <- function(x, b, rf, n) {
   combo <- clean_asset_bench_rf(x, b, rf)
   x_er <- combo$x - combo$rf[, rep(1, ncol(combo$x))]
   b_er <- combo$b - combo$rf
-  obs <- xts_cbind(x_er, b_er)
+  obs <- cbind.xts(x_er, b_er, check.names = FALSE)
   obs <- xts_to_dataframe(obs)
   rcov <- slider::slide(obs[, -1, drop = FALSE], ~cov(.x), .before = n-1,
                         .complete = TRUE)
@@ -635,7 +635,7 @@ roll_r2 <- function(x, b, n) {
     warning('more than one benchmark entered, only taking first column')
   }
   combo <- clean_asset_bench_rf(x, b)
-  obs <- xts_to_dataframe(xts_cbind(combo$x, combo$b))
+  obs <- xts_to_dataframe(cbind.xts(combo$x, combo$b, check.names = FALSE))
   rcor <- slider::slide(obs[, -1, drop = FALSE], ~cor(.x), .before = n-1,
                         .complete = TRUE)
   rcor <- lapply(rcor, \(x) {x[, nrow(x)]})
