@@ -541,14 +541,6 @@ na_price <- function(x) {
   rep(x[ind], times = diff(c(ind, length(x) + 1)))
 }
 
-#' @title Convert to month end date
-#' @param dt Date or string in "YYYY-MM-DD" format
-#' @return month end date
-#' @export
-month_end <- function(dt) {
-  lubridate::ceiling_date(as.Date(dt), 'months') - 1
-}
-
 #' @title Guess Frequency with xts periodicity
 #' @param x xts
 #' @return frequency as string, e.g., "days", "months"
