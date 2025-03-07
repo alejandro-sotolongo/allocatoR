@@ -15,4 +15,4 @@ License: GNU 3.0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
-Depends: xts, lubridate, tidyr, ggplot2, timeDate, bizdays
+Depends: xts, lubridate, tidyr, ggplot2, timeDate, bizdays, slider
