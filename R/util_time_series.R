@@ -415,8 +415,8 @@ read_xts <- function(wb, sht = 1, skip = 0) {
 #'   of the observations are missing the column is removed. Otherwise the
 #'   missing values are filled with zero. If frequency is entered returns will
 #'   be changed to desired frequency, otherwise leave `NULL` to not alter.
-#' @return list with $x for asset(s), $b for benchmark(s), and $rf if
-#' risk-free is entered.
+#' @return list with $x for asset(s), $b for benchmark(s), $xb for assets and
+#'  benchmark, and $rf if risk-free is entered.
 #' @examples
 #' data(assets)
 #' b <- x[, 1]
@@ -435,16 +435,19 @@ clean_asset_bench_rf <- function(x, b, rf = NULL, freq = NULL,
       rf <- change_freq(rf, freq)
     }
   }
-  combo <- xts_cbind_inter(x, b)
-  if (!is.null(colnames(combo$miss_ret))) {
-    if (colnames(combo$miss_ret) == colnames(b)) {
+  combo <- xts_cbind_inter(x, b, eps)
+  if (!is.null(colnames(combo$miss))) {
+    if (colnames(b) %in% colnames(combo$miss)) {
       stop('benchmark is missing')
+    }
+    if (all(colnames(x) %in% colnames(combo$miss))) {
+      stop("all assets are missing")
     }
   }
   if (!is.null(rf)) {
-    combo <- xts_cbind_inter(combo$ret, rf)
-    if (!is.null(colnames(combo$miss_ret))) {
-      if (colnames(combo$miss_ret) == colnames(rf)) {
+    combo <- xts_cbind_inter(combo$ret, rf, eps)
+    if (!is.null(colnames(combo$miss))) {
+      if (colnames(rf) %in% colnames(combo$miss)) {
         stop('rf is missing')
       }
     }
@@ -463,6 +466,7 @@ clean_asset_bench_rf <- function(x, b, rf = NULL, freq = NULL,
   }
   res$b <- combo$ret[, colnames(combo$ret) %in% colnames(b)]
   res$x <- combo$ret[, colnames(combo$ret) %in% colnames(x)]
+  res$xb <- cbind.xts(res$x, res$b, check.names = FALSE)
   return(res)
 }
 
@@ -504,8 +508,12 @@ clean_ret <- function(x, trunc_start = TRUE, trunc_end = TRUE, eps = 0.05,
     ret <- x[, !miss_col]
     miss <- x[, miss_col]
     miss_nm <- paste0(paste0(colnames(x)[miss_col], collapse = " ,"))
-    warning(paste0(miss_nm, " exceeded eps threshold for missing
-                   observations."))
+    warning(
+      paste0(
+        miss_nm,
+        " exceeded eps threshold for missing observations."
+      )
+    )
   } else {
     miss <- xts()
     ret <- x
@@ -574,6 +582,3 @@ check_freq <- function(freq) {
     return(tolower(freq))
   }
 }
-
-
-
