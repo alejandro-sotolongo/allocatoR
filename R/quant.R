@@ -250,6 +250,20 @@ absorp_ratio <- function(xcor, n_pc = NULL) {
 
 # MPT calcs ----
 
+calc_var <- function(x, p = 0.05, method = c("boot", "stable")) {
+  method <- tolower(method)[1]
+  if (method == "stable") {
+    sfit <- sapply(x, stable_fit_mle)
+    res <- apply(sfit, 2, \(x) {stable_q(p = p, pars = x)})
+  } else if (method == "boot") {
+    res <- apply(x, 2, \(x) {sort(sample(x, 1000, TRUE),
+                               decreasing = FALSE)[round(p * 1000, 0)]})
+  } else {
+    stop("invalid method")
+  }
+  return(res)
+}
+
 #' @title Calculate Peak to Trough Drawdowns
 #' @param x xts object
 #' @return xts of drawdown time-series

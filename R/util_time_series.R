@@ -202,6 +202,7 @@ xts_rbind <- function(new, old, is_xts = TRUE, backfill = FALSE) {
 #' @export
 xts_cbind_inter <- function(x, y, eps = 0.05) {
   combo <- cbind.xts(x, y, check.names = FALSE)
+  colnames(combo) <- c(colnames(x), colnames(y))
   res <- clean_ret(combo, eps = eps)
   return(res)
 }
