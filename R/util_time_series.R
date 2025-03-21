@@ -276,7 +276,8 @@ last_us_trading_day <- function(as_of = NULL) {
     as_of <- Sys.Date()
   }
   yr <- lubridate::year(as_of)
-  bizdays::create.calendar('cal', holidays = timeDate::holidayNYSE((yr-1):yr),
+  bizdays::create.calendar('cal',
+                           holidays = timeDate::holidayNYSE((yr-1):(yr+1)),
                            weekdays = c('saturday', 'sunday'))
   bizdays::adjust.previous(as_of - 1, 'cal')
 }
