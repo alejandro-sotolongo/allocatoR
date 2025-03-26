@@ -564,7 +564,11 @@ guess_freq <- function(x) {
     warning("Could not guess frequency.")
     return(NA)
   } else {
-    tolower(freq$units)
+    freq <- tolower(freq$scale)
+    if (freq == "daily") {
+      return("days")
+    }
+    gsub("ly", "s", freq)
   }
 }
 
