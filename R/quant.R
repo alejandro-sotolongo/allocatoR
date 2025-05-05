@@ -53,6 +53,12 @@ monthly_spline <- function(m_ret, q_ret, thresh = 0.00001) {
 #'    returns with daily estimates.
 #' @export
 daily_spline <- function(d_ret, m_ret, thresh = 0.0000001) {
+  d_ret <- clean_ret(d_ret, eps = 1)
+  m_ret <- clean_ret(m_ret, eps = 1)
+  d_ret <- d_ret$ret
+  m_ret <- m_ret$ret
+  d_incept <- first_comm_start(d_ret)
+  m_ret <- cut_time(m_ret, d_incept)
   m_dt <- zoo::index(m_ret)
   m_dt <- substr(m_dt, 1, 7)
   d_adj <- d_ret
