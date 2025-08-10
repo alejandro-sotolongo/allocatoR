@@ -80,6 +80,7 @@ ret_date_info <- function(x) {
   edate <- sdate
   for (i in 1:ncol(x)) {
     dt <- zoo::index(na.omit(x[, i]))
+    if (length(dt) == 0) {dt <- NA}
     sdate[i] <- dt[1]
     edate[i] <- dt[length(dt)]
   }
